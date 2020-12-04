@@ -20,7 +20,6 @@ export class ActorSheetFate extends ActorSheet {
 
         mergeObject(options, {
             classes: options.classes.concat(["fatex fatex__sheet"]),
-            template: "",
             tabs: [
                 {
                     navSelector: ".fatex__tabs__navigation",
@@ -30,6 +29,7 @@ export class ActorSheetFate extends ActorSheet {
             ],
             scrollY: [".desk__content"],
             width: 900,
+            type: "full",
         });
 
         return options;
@@ -38,6 +38,10 @@ export class ActorSheetFate extends ActorSheet {
     get template() {
         if (!game.user.isGM && this.actor.limited) {
             return "systems/fatex/templates/actor/limited.html";
+        }
+
+        if (this.options.type === "inline") {
+            return "systems/fatex/templates/actor/inline.html";
         }
 
         return "systems/fatex/templates/actor/character.html";

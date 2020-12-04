@@ -47,10 +47,13 @@ export class ActorGroupOverview extends Application {
 
         for (const actor in data.actors) {
             const sheetData = await data.actors[actor].sheet?.getData();
+            const sheet = data.actors[actor].sheet;
 
             if (sheetData) {
-                const sheet = await renderTemplate(data.actors[actor].sheet?.template, sheetData);
-                data.sheets.push(sheet);
+                sheet.options.type = "inline";
+
+                const rendered = await renderTemplate(sheet.template, sheetData);
+                data.sheets.push(rendered);
             }
         }
 
