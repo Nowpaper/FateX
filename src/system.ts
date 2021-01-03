@@ -12,8 +12,6 @@
  *      (http://creativecommons.org/licenses/by/3.0/).
  */
 
-import "./scss/fatex.scss";
-
 import { FateX } from "./config";
 import { ActorFate } from "./module/actor/ActorFate";
 import { CharacterSheet } from "./module/actor/character/CharacterSheet";
@@ -27,11 +25,13 @@ import { SkillSheet } from "./module/item/skill/SkillSheet";
 import { StressSheet } from "./module/item/stress/StressSheet";
 import { StuntSheet } from "./module/item/stunt/StuntSheet";
 import { TemplateActors } from "./module/apps/template-actors/TemplateActors";
+import { MigrationHandler } from "./module/helper/MigrationHandler";
 
 /* -------------------------------- */
 /*	Register hooks      			*/
 /* -------------------------------- */
 TemplateActors.hooks();
+MigrationHandler.hooks();
 
 /* -------------------------------- */
 /*	System initialization			*/
@@ -98,27 +98,9 @@ Hooks.once("init", async () => {
     });
 });
 
-/* -------------------------------- */
-/*	Webpack HMR                     */
-/* -------------------------------- */
-if (process.env.NODE_ENV === "development") {
-    if (module.hot) {
-        module.hot.accept();
-
-        if (module.hot.status() === "apply") {
-            for (const template in _templateCache) {
-                if (Object.prototype.hasOwnProperty.call(_templateCache, template)) {
-                    delete _templateCache[template];
-                }
-            }
-
-            TemplatePreloader.preloadHandlebarsTemplates().then(() => {
-                for (const application in ui.windows) {
-                    if (Object.prototype.hasOwnProperty.call(ui.windows, application)) {
-                        ui.windows[application].render(true);
-                    }
-                }
-            });
-        }
-    }
+if (import.meta.hot) {
+    import.meta.hot.accept();
+    // import.meta.hot.dispose(() => {
+    // app.unmount();
+    // });
 }

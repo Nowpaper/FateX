@@ -3,10 +3,11 @@
         "target": "es2018",
         "module": "esnext",
         "lib": ["es2015", "es2019", "dom"],
-        "types": ["foundry-vtt-types", "webpack-env"],
+        "types": ["foundry-vtt-types"],
         "sourceMap": true,
         "strict": true,
         "allowJs": true,
+        "esModuleInterop": true,
 
         //TODO: enable again
         "noImplicitAny": false /* Raise error on expressions and declarations with an implied 'any' type. */,
