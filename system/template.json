@@ -1,6 +1,6 @@
 {
     "Actor": {
-        "types": ["character"],
+        "types": ["character", "group"],
         "templates": {},
         "character": {
             "biography": {
@@ -10,6 +10,9 @@
                 "current": 3,
                 "refresh": 3
             }
+        },
+        "group": {
+            "actors": []
         }
     },
     "Item": {

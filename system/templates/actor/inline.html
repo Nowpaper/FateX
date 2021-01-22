@@ -1,5 +1,17 @@
 <form autocomplete="off" class="{{cssClass}}">
     <div class="desk">
-        {{> "systems/fatex/templates/actor/parts/sidebar/artwork.html"}}
+
+      <div class="desk__header">
+        <div class="fatex__header">
+          <div class="fatex__header__name">
+            <label class="fatex__header__label" for="name">{{localize "FAx.Sheet.Name"}}</label>
+            <input class="fatex__header__name__input fatex__input" name="name" type="text" value="{{actor.name}}">
+          </div>
+        </div>
+      </div>
+
+      <div class="desk__aspects">
+        {{> "systems/fatex/templates/actor/parts/tabloid/aspects.html"}}
+      </div>
     </div>
 </form>

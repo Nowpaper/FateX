@@ -29,19 +29,14 @@ export class ActorSheetFate extends ActorSheet {
             ],
             scrollY: [".desk__content"],
             width: 900,
-            type: "full",
         });
 
         return options;
     }
 
-    get template() {
+    get template(): string {
         if (!game.user.isGM && this.actor.limited) {
             return "systems/fatex/templates/actor/limited.html";
-        }
-
-        if (this.options.type === "inline") {
-            return "systems/fatex/templates/actor/inline.html";
         }
 
         return "systems/fatex/templates/actor/character.html";

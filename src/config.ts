@@ -11,6 +11,7 @@ import { StressItem } from "./module/item/stress/StressItem";
 import { StuntItem } from "./module/item/stunt/StuntItem";
 import { BaseItem } from "./module/item/BaseItem";
 import { BaseComponent } from "./module/components/BaseComponent";
+import { ActorGroup } from "./module/apps/actor-groups/ActorGroup";
 
 export interface FatexConfig {
     itemClasses: {
@@ -33,6 +34,13 @@ export interface FatexConfig {
         [key: string]: typeof Application | null;
         [key: number]: typeof Application | null;
     };
+
+    instances: {
+        [key: string]: typeof Application | null;
+        [key: number]: typeof Application | null;
+    };
+
+    groups: typeof ActorGroup[];
 
     global: {
         useMarkdown: boolean;
@@ -62,8 +70,11 @@ export const FateX: FatexConfig = {
     applications: {
         templateSettings: null,
         templatePicker: null,
-        actorGroups: null,
     },
+    instances: {
+        actorGroupsPanel: null,
+    },
+    groups: [],
     global: {
         useMarkdown: false,
     },

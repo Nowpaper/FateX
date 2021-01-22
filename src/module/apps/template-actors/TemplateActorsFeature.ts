@@ -1,9 +1,7 @@
 import { TemplateActorPicker } from "./TemplateActorPicker";
 import { TemplateActorSettings } from "./TemplateActorSettings";
 
-declare class Settings extends SidebarTab {}
-
-export class TemplateActors {
+export class TemplateActorsFeature {
     static hooks() {
         Hooks.once("ready", async () => {
             // Initialize instances in config
@@ -13,7 +11,7 @@ export class TemplateActors {
 
         // Add extra button to foundrys settings menu
         Hooks.on("renderSidebarTab", (app, html) => {
-            if (!(app instanceof Settings) || !game.user.isGM) {
+            if (app.options.id !== "settings" || !game.user.isGM) {
                 return;
             }
 

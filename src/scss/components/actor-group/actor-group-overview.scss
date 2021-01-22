@@ -1,7 +1,7 @@
 .fatex__actor_group_overview {
-    position: fixed;
+    /*position: fixed;
     top: 5px;
-    right: 320px;
+    right: 320px;*/
     padding: $component-padding * 2;
 }
 
@@ -31,7 +31,7 @@
     object-position: 50% 0;
 }
 
-.fatex__actor_group_add {
+/*.fatex__actor_group_add {
     position: absolute;
     height: 100%;
     left: -$component-padding;
@@ -48,4 +48,4 @@
         left: 50%;
         transform: translate(-50%, -50%);
     }
-}
+}*/

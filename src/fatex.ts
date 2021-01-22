@@ -26,14 +26,8 @@ import { ItemFate } from "./module/item/ItemFate";
 import { SkillSheet } from "./module/item/skill/SkillSheet";
 import { StressSheet } from "./module/item/stress/StressSheet";
 import { StuntSheet } from "./module/item/stunt/StuntSheet";
-import { TemplateActors } from "./module/apps/template-actors/TemplateActors";
-import { ActorGroups } from "./module/apps/actor-groups/ActorGroups";
-
-/* -------------------------------- */
-/*	Register hooks      			*/
-/* -------------------------------- */
-TemplateActors.hooks();
-ActorGroups.hooks();
+import { TemplateActorsFeature } from "./module/apps/template-actors/TemplateActorsFeature";
+import { ActorGroupsFeature } from "./module/apps/actor-groups/ActorGroupsFeature";
 
 /* -------------------------------- */
 /*	System initialization			*/
@@ -99,6 +93,12 @@ Hooks.once("init", async () => {
         makeDefault: true,
     });
 });
+
+/* -------------------------------- */
+/*	Register hooks      			*/
+/* -------------------------------- */
+TemplateActorsFeature.hooks();
+ActorGroupsFeature.hooks();
 
 /* -------------------------------- */
 /*	Webpack HMR                     */
