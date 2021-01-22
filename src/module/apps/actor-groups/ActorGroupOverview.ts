@@ -40,18 +40,25 @@ export class ActorGroupOverview extends Application {
 
     async getData() {
         const data: any = {};
-
-        const ids = ActorGroupOverview.getFakeData();
-        data.actors = game.actors.filter((actor) => ids.includes(actor.id));
         data.sheets = [];
 
-        for (const actor in data.actors) {
-            const sheetData = await data.actors[actor].sheet?.getData();
-            const sheet = data.actors[actor].sheet;
+        const ids = ActorGroupOverview.getFakeData();
+        const actors = game.actors.filter((actor) => ids.includes(actor.id));
+
+        for (const actor in actors) {
+            const cls = actors[actor]._sheetClass;
+
+            if (!cls) {
+                continue;
+            }
+
+            // get sheet but delete new app from actor
+            const sheet = new cls(actors[actor], { type: "inline" });
+            delete actors[actor].apps[sheet.appId];
+
+            const sheetData = await sheet.getData();
 
             if (sheetData) {
-                sheet.options.type = "inline";
-
                 const rendered = await renderTemplate(sheet.template, sheetData);
                 data.sheets.push(rendered);
             }
