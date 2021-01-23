@@ -27,7 +27,8 @@ import { SkillSheet } from "./module/item/skill/SkillSheet";
 import { StressSheet } from "./module/item/stress/StressSheet";
 import { StuntSheet } from "./module/item/stunt/StuntSheet";
 import { TemplateActorsFeature } from "./module/apps/template-actors/TemplateActorsFeature";
-import { ActorGroupsFeature } from "./module/apps/actor-groups/ActorGroupsFeature";
+import { ActorGroup } from "./module/apps/actor-groups/ActorGroup";
+import { ActorGroupPanel } from "./module/apps/actor-groups/ActorGroupPanel";
 
 /* -------------------------------- */
 /*	System initialization			*/
@@ -59,6 +60,11 @@ Hooks.once("init", async () => {
     // Register FateX actor sheets
     Actors.registerSheet("FateX", CharacterSheet, {
         types: ["character"],
+        makeDefault: true,
+    });
+
+    Actors.registerSheet("FateX", ActorGroup, {
+        types: ["group"],
         makeDefault: true,
     });
 
@@ -98,7 +104,7 @@ Hooks.once("init", async () => {
 /*	Register hooks      			*/
 /* -------------------------------- */
 TemplateActorsFeature.hooks();
-ActorGroupsFeature.hooks();
+ActorGroupPanel.hooks();
 
 /* -------------------------------- */
 /*	Webpack HMR                     */

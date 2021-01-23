@@ -1,9 +1,11 @@
 import { TemplateActorPicker } from "./TemplateActorPicker";
 import { TemplateActorSettings } from "./TemplateActorSettings";
 
+declare Settings extends SidebarTab;
+
 export class TemplateActorsFeature {
     static hooks() {
-        Hooks.once("ready", async () => {
+        Hooks.once("init", async () => {
             // Initialize instances in config
             CONFIG.FateX.applications.templateSettings = new TemplateActorSettings({});
             CONFIG.FateX.applications.templatePicker = new TemplateActorPicker({});
@@ -11,7 +13,7 @@ export class TemplateActorsFeature {
 
         // Add extra button to foundrys settings menu
         Hooks.on("renderSidebarTab", (app, html) => {
-            if (app.options.id !== "settings" || !game.user.isGM) {
+            if (app instanceof Settings || !game.user.isGM) {
                 return;
             }
 

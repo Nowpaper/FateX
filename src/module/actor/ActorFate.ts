@@ -81,6 +81,10 @@ export class ActorFate extends Actor {
             return false;
         }
 
+        if (this.data.type === "group") {
+            return false;
+        }
+
         return super.visible;
     }
 
