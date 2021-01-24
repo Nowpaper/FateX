@@ -12,11 +12,14 @@
             }
         },
         "group": {
-            "actors": []
+            "type": "",
+            "options": {
+                "showArtwork": true
+            }
         }
     },
     "Item": {
-        "types": ["stress", "aspect", "consequence", "skill", "stunt", "extra"],
+        "types": ["stress", "aspect", "consequence", "skill", "stunt", "extra", "actorReference", "tokenReference"],
         "templates": {
             "base": {
                 "disabled": false,
@@ -59,6 +62,13 @@
             "templates": ["base"],
             "shortDescription": "",
             "collapsed": false
+        },
+        "actorReference": {
+            "id": ""
+        },
+        "tokenReference": {
+            "id": "",
+            "scene": ""
         }
     }
 }

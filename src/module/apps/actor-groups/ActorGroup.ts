@@ -47,21 +47,19 @@ export class ActorGroup extends BaseEntitySheet {
     async _render(force = false, options = {}) {
         await super._render(force, options);
 
-        const testData = [
-            { type: "actor", id: "60DlfoJBm1r3zzUf" },
-            { type: "token", scene: "fUCkdSOqyzmveZNW", id: "9fjxCWZBnkQkYUH6" },
-        ];
+        const items = this.entity.items.map((i) => i.data).sort(this._sortItems);
+        const references = items.filter((item) => ["actorReference", "itemReference"].includes(item.type));
 
-        for (const sheet of testData) {
-            if (sheet.type === "actor") {
-                const actor = game.actors.filter((actor) => actor.id === sheet.id).shift();
+        for (const reference of references) {
+            if (reference.type === "actorReference") {
+                const actor = game.actors.filter((actor) => actor.id === reference.data.id).shift();
                 const actorSheet = new InlineActorSheetFate(actor);
                 actorSheet.render(true, { group: this });
             }
 
-            if (sheet.type === "token") {
-                const scene: any = game.scenes.filter((scene) => scene.id === sheet.scene).shift();
-                const tokenData = scene.data.tokens.filter((token) => token._id === sheet.id).shift();
+            if (reference.type === "tokenReference") {
+                const scene: any = game.scenes.filter((scene) => scene.id === reference.data.scene).shift();
+                const tokenData = scene.data.tokens.filter((token) => token._id === reference.data.id).shift();
 
                 const token = new Token(tokenData, scene);
                 const tokenSheet = new InlineActorSheetFate(token.actor);
@@ -75,16 +73,49 @@ export class ActorGroup extends BaseEntitySheet {
         }
     }
 
+    _sortItems(a, b) {
+        return (a.sort || 0) - (b.sort || 0);
+    }
+
     /*************************
      * EVENT HANDLER
      *************************/
 
     /** @override */
     async _onDrop(event) {
-        // Try to extract the data
         const data = JSON.parse(event.dataTransfer.getData("text/plain"));
 
-        alert("drop!");
-        console.log(data);
+        if (data.type && data.type === "Actor") {
+            this._createActorReference(data.id);
+        }
+
+        if (data.type && data.type === "Token") {
+            this._createTokenReference(data.id, data.scene);
+        }
+    }
+
+    private _createActorReference(id) {
+        const itemData = {
+            name: "ActorReference",
+            type: "actorReference",
+            data: {
+                id: id,
+            },
+        };
+
+        this.entity.createOwnedItem(itemData);
+    }
+
+    private _createTokenReference(id: string, scene: string): void {
+        const itemData = {
+            name: "TokenReference",
+            type: "tokenReference",
+            data: {
+                id: id,
+                scene: scene,
+            },
+        };
+
+        this.entity.createOwnedItem(itemData);
     }
 }
