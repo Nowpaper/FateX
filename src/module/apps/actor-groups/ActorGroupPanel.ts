@@ -4,7 +4,11 @@ import { ActorFate } from "../../actor/ActorFate";
  * Represents the actor group panel containing multiple actor groups.
  * Is displayed inside the actor sidebar tab by default.
  */
-export class ActorGroupPanel extends ActorDirectory {
+export class ActorGroupPanel extends Application {
+    get popOut() {
+        return false;
+    }
+
     /**
      * Injects itself into the panel wrapper instead of the body element
      * The panel wrapper is injected into the actor sidebar
@@ -15,17 +19,6 @@ export class ActorGroupPanel extends ActorDirectory {
     _injectHTML(html, _options) {
         $(`#actor_group_panel_wrapper`).append(html);
         this._element = html;
-    }
-
-    initialize() {
-        // Assign Folders
-        this.folders = game.folders.filter(() => false);
-
-        // Assign Entities
-        this.entities = game.actors.filter((e) => e.data.type === "group");
-
-        // Build Tree
-        this.tree = SidebarDirectory.setupFolders(this.folders, this.entities, "");
     }
 
     /**
@@ -46,6 +39,48 @@ export class ActorGroupPanel extends ActorDirectory {
         return `/systems/fatex/templates/apps/actor-group-panel.html`;
     }
 
+    getData(_options) {
+        const data: {
+            groups?: Actor[];
+        } = {};
+
+        data.groups = game.actors.filter((actor) => actor.data.type === "group");
+
+        return data;
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        // Entry-level events
+        html.on("click", ".entity-name", this._onClickEntityName.bind(this));
+    }
+
+    /* -------------------------------------------- */
+
+    /**
+     * Handle clicking on an Entity name in the Sidebar directory
+     * @param {Event} event   The originating click event
+     * @private
+     */
+    _onClickEntityName(event) {
+        event.preventDefault();
+        const element = event.currentTarget;
+        const entityId = element.parentElement.dataset.entityId;
+        const entity = game.actors.get(entityId);
+        const sheet = entity.sheet;
+
+        // If the sheet is already rendered:
+        if (sheet.rendered) {
+            sheet.maximize();
+            // @ts-ignore
+            sheet.bringToTop();
+        }
+
+        // Otherwise render the sheet
+        else sheet.render(true);
+    }
+
     static hooks() {
         Hooks.on("ready", (_app, _html) => {
             CONFIG.FateX.instances.actorGroupsPanel = new ActorGroupPanel();
@@ -55,8 +90,8 @@ export class ActorGroupPanel extends ActorDirectory {
         /**
          * Injects the actor group panel wrapper inside the actors sidebar
          */
-        Hooks.on("renderSidebarTab", (app, html) => {
-            if (app.options.id !== "actors") {
+        Hooks.on("renderActorDirectory", (app, html) => {
+            if (app.options.popOut || html.find(".actor_group_panel_wrapper").length) {
                 return;
             }
 
@@ -74,6 +109,12 @@ export class ActorGroupPanel extends ActorDirectory {
 
             if (game.ready) {
                 CONFIG.FateX.instances.actorGroupsPanel.render(true);
+            }
+        });
+
+        Hooks.on("updateActor", (entity, _data, _options, _userId) => {
+            for (const sheet of game.inlineSheets[entity.id]) {
+                sheet.render();
             }
         });
     }

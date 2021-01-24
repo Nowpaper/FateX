@@ -1,3 +1,12 @@
-<p>Hallo ich bin ein Panel!</p>
+{{#*inline "entityPartial"}}
+  <li class="directory-item entity actor flexrow" data-entity-id="{{this._id}}">
+    <img class="profile actor-profile" title="{{this.name}}" src="{{this.img}}"/>
+    <h4 class="entity-name"><a>{{this.name}}</a></h4>
+  </li>
+{{/inline}}
 
-<div class="actor_group_panel__groups"></div>
+<div class="directory-list actor_group_panel__groups">
+  {{#each groups}}
+    {{> entityPartial}}
+  {{/each~}}
+</div>

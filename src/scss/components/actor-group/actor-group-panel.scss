@@ -1,3 +1,7 @@
 .actor_group_panel_wrapper {
     flex: none;
+
+    .actor_group_panel__groups {
+        overflow-y: visible;
+    }
 }

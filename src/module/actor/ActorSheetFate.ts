@@ -80,6 +80,7 @@ export class ActorSheetFate extends ActorSheet {
             editable: this.isEditable,
             isTemplateActor: this.actor.isTemplateActor,
             isEmptyActor: !this.actor.items.size,
+            isToken: this.token && !this.token.data.actorLink,
             config: CONFIG.FateX,
         };
 
