@@ -64,6 +64,12 @@ export class ActorFate extends Actor {
         }
     }
 
+    getActiveTokens(linked = false) {
+        const tokens = super.getActiveTokens(linked);
+
+        return [...tokens]; //, ...game.inlineToken];
+    }
+
     get _sheetClass() {
         if (this.isTemplateActor) {
             return TemplateActorSheetFate;

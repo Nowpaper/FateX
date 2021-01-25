@@ -70,6 +70,16 @@ export class ActorGroup extends BaseEntitySheet {
                 game.inlineSheets[tokenData.actorId] = game.inlineSheets[tokenData.actorId] || [];
                 game.inlineSheets[tokenData.actorId].push(tokenSheet);
             }
+
+            /**
+             * Save all inline token globally (find better location than game.)
+             * Add inline token to ActorFate getActiveTokens
+             * create new InlineToken class that holds a reference to its own actors sheet
+             * override the token._onUpdateBaseActor(this.data, data) to make sure it renders its saved inline sheet
+             * remove game.inlinesheets
+             * add onclose-handler for actor groups to cleanup inline token list
+             * refactor and cleanup base classes
+             */
         }
     }
 
