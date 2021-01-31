@@ -29,6 +29,7 @@ import { StuntSheet } from "./module/item/stunt/StuntSheet";
 import { TemplateActorsFeature } from "./module/apps/template-actors/TemplateActorsFeature";
 import { ActorGroup } from "./module/apps/actor-groups/ActorGroup";
 import { ActorGroupPanel } from "./module/apps/actor-groups/ActorGroupPanel";
+import { ReferenceSheet } from "./module/item/references/ReferenceSheet";
 
 /* -------------------------------- */
 /*	System initialization			*/
@@ -96,6 +97,11 @@ Hooks.once("init", async () => {
 
     Items.registerSheet("FateX", ExtraSheet, {
         types: ["extra"],
+        makeDefault: true,
+    });
+
+    Items.registerSheet("FateX", ReferenceSheet, {
+        types: ["actorReference", "tokenReference"],
         makeDefault: true,
     });
 });

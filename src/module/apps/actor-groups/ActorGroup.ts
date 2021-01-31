@@ -4,6 +4,16 @@ import { InlineActorSheetFate } from "../../actor/InlineActorSheetFate";
  * Represents a single actor group. Has a normal (inside groups panel) and a popped out state.
  */
 export class ActorGroup extends BaseEntitySheet {
+    /*constructor(...args) {
+        super(...args);
+
+        /!**
+         * If this Actor Sheet represents a synthetic Token actor, reference the active Token
+         * @type {Token}
+         *!/
+        this.token = this.object.token;
+    }*/
+
     static get defaultOptions() {
         const options = super.defaultOptions;
 
@@ -48,11 +58,16 @@ export class ActorGroup extends BaseEntitySheet {
         await super._render(force, options);
 
         const items = this.entity.items.map((i) => i.data).sort(this._sortItems);
-        const references = items.filter((item) => ["actorReference", "itemReference"].includes(item.type));
+        const references = items.filter((item) => ["actorReference", "tokenReference"].includes(item.type));
 
         for (const reference of references) {
             if (reference.type === "actorReference") {
-                const actor = game.actors.filter((actor) => actor.id === reference.data.id).shift();
+                const actor = game.actors.find((actor) => actor.id === reference.data.id);
+
+                if (!actor) {
+                    continue;
+                }
+
                 const actorSheet = new InlineActorSheetFate(actor);
                 actorSheet.render(true, { group: this });
             }

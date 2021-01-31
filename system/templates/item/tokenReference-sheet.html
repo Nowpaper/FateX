@@ -1,0 +1,25 @@
+{{> "systems/fatex/templates/item/parts/layout/item-header.html" title="FAx.Item.Reference.EditItem" item=item}}
+
+<div class="fatex__settings">
+    {{> "systems/fatex/templates/item/parts/settings/setting-input.html"
+        headline = "FAx.Item.Reference.Name"
+        field = item.name
+        fieldName = "name"
+        placeholder = "FAx.Item.Reference.Name"
+    }}
+
+    {{> "systems/fatex/templates/item/parts/settings/setting-input.html"
+        headline = "FAx.Item.Reference.ID"
+        field = item.id
+        fieldName = "id"
+    }}
+
+    {{> "systems/fatex/templates/item/parts/settings/setting-input.html"
+        headline = "FAx.Item.Reference.Scene"
+        field = item.scene
+        fieldName = "scene"
+    }}
+</div>
+
+{{> "systems/fatex/templates/item/parts/layout/item-footer.html"}}
+

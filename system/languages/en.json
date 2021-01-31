@@ -121,6 +121,12 @@
                 "ShortDescription": "Short Description",
                 "ShortDescriptionHelp": "Short description for this extra"
             },
+            "Reference": {
+                "EditItem": "Edit Reference",
+                "Name": "Reference name",
+                "ID": "ID",
+                "Scene": "Scene"
+            },
             "Automation": {
                 "Headline": "Automation",
                 "BoxesHeadline": "Box Automation",
