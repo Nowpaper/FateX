@@ -87,7 +87,8 @@ export class ActorSheetFate extends ActorSheet {
         // Add actor, actor data and item
         data.actor = duplicate(this.actor.data);
         data.data = data.actor.data;
-        data.items = this.actor.items.map((i) => i.data).sort(this._sortItems);
+        data.items = this.actor.items.map((i) => i.data);
+        data.items.sort((a, b) => (a.sort || 0) - (b.sort || 0));
 
         // Add filtered item lists for easier access
         data.stress = data.items.filter((item) => item.type === "stress");
@@ -134,10 +135,6 @@ export class ActorSheetFate extends ActorSheet {
         }
 
         return buttons;
-    }
-
-    _sortItems(a, b) {
-        return (a.sort || 0) - (b.sort || 0);
     }
 
     /**

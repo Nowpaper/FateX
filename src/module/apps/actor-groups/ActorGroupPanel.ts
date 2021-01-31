@@ -1,17 +1,24 @@
 import { ActorFate } from "../../actor/ActorFate";
+import { ActorGroupSheet } from "./ActorGroupSheet";
 
 /**
  * Represents the actor group panel containing multiple actor groups.
  * Is displayed inside the actor sidebar tab by default.
  */
 export class ActorGroupPanel extends Application {
-    get popOut() {
-        return false;
+    /**
+     * Set default options like popOut and template
+     */
+    static get defaultOptions() {
+        return mergeObject(super.defaultOptions, {
+            popOut: false,
+            template: `/systems/fatex/templates/apps/actor-group-panel.html`,
+        });
     }
 
     /**
      * Injects itself into the panel wrapper instead of the body element
-     * The panel wrapper is injected into the actor sidebar
+     * The panel wrapper is injected via hook into the actor sidebar
      *
      * @param html
      * @param _options
@@ -22,7 +29,7 @@ export class ActorGroupPanel extends Application {
     }
 
     /**
-     * Removes the _element reference before rendering if necessary and then renders all available actor groups
+     * Removes the _element reference before rendering if necessary
      *
      * @param force
      * @param options
@@ -35,20 +42,24 @@ export class ActorGroupPanel extends Application {
         return super.render(force, options);
     }
 
-    get template() {
-        return `/systems/fatex/templates/apps/actor-group-panel.html`;
-    }
-
-    getData(_options) {
+    /**
+     * Data thats needed for rendering.
+     * Consists of a multiple actors of type "group" sorted by name.
+     */
+    getData() {
         const data: {
             groups?: Actor[];
         } = {};
 
-        data.groups = game.actors.filter((actor) => actor.data.type === "group");
+        data.groups = game.actors.filter((actor) => actor.data.type === "group" && actor.isVisibleByPermission);
+        data.groups.sort((a, b) => a.name.localeCompare(b.name));
 
         return data;
     }
 
+    /**
+     * Activates the click listeners on every group inside the group panel
+     */
     activateListeners(html) {
         super.activateListeners(html);
 
@@ -56,39 +67,10 @@ export class ActorGroupPanel extends Application {
         html.on("click", ".entity-name", this._onClickEntityName.bind(this));
     }
 
-    /* -------------------------------------------- */
-
-    /**
-     * Handle clicking on an Entity name in the Sidebar directory
-     * @param {Event} event   The originating click event
-     * @private
-     */
-    _onClickEntityName(event) {
-        event.preventDefault();
-        const element = event.currentTarget;
-        const entityId = element.parentElement.dataset.entityId;
-        const entity = game.actors.get(entityId);
-        const sheet = entity.sheet;
-
-        // If the sheet is already rendered:
-        if (sheet.rendered) {
-            sheet.maximize();
-            // @ts-ignore
-            sheet.bringToTop();
-        }
-
-        // Otherwise render the sheet
-        else sheet.render(true);
-    }
-
     static hooks() {
-        Hooks.on("ready", (_app, _html) => {
-            CONFIG.FateX.instances.actorGroupsPanel = new ActorGroupPanel();
-            CONFIG.FateX.instances.actorGroupsPanel.render(true);
-        });
-
         /**
          * Injects the actor group panel wrapper inside the actors sidebar
+         * Actor group panel sits above the actor directory.
          */
         Hooks.on("renderActorDirectory", (app, html) => {
             if (app.options.popOut || html.find(".actor_group_panel_wrapper").length) {
@@ -105,26 +87,73 @@ export class ActorGroupPanel extends Application {
                 </div>
             `);
 
-            html.on("click", "button.create-actor-group", () => this._onCreateGroup.call(this));
+            html.on("click", "button.create-actor-group", () => this._onClickCreateGroup.call(this));
 
+            // If sidebar is re-rendered (not available on first invocation)
             if (game.ready) {
                 CONFIG.FateX.instances.actorGroupsPanel.render(true);
             }
         });
 
+        /**
+         * Ready Hook
+         * Renders the actor group panel as soon as the application has fully initialized
+         */
+        Hooks.on("ready", (_app, _html) => {
+            CONFIG.FateX.instances.actorGroupsPanel = new ActorGroupPanel();
+            CONFIG.FateX.instances.actorGroupsPanel.render(true);
+        });
+
+        /**
+         * Rerender all inline-sheets of updated actor (needed for synthetic actor token to circumvent patching the _onUpdateBaseActor method)
+         */
         Hooks.on("updateActor", (entity, _data, _options, _userId) => {
-            for (const sheet of game.inlineSheets[entity.id]) {
-                sheet.render();
+            const openGroupSheetApps = Object.values(ui.windows).filter((app) => app instanceof ActorGroupSheet);
+            const openGroupSheets = openGroupSheetApps as ActorGroupSheet[];
+
+            for (const groupSheet of openGroupSheets) {
+                const inlineSheetsOfUpdatedActor = groupSheet.inlineSheets.filter((sheet) => sheet.actor.id === entity.id);
+
+                for (const inlineSheet of inlineSheetsOfUpdatedActor) {
+                    inlineSheet.render();
+                }
             }
         });
     }
 
-    static _onCreateGroup() {
-        const createData = {
+    /*************************
+     * EVENT HANDLER
+     *************************/
+
+    /**
+     * Handle clicking on an group name in the sidebar directory
+     * Opens the character sheet for this entity
+     */
+    _onClickEntityName(event) {
+        event.preventDefault();
+        const element = event.currentTarget;
+        const entityId = element.parentElement.dataset.entityId;
+        const entity = game.actors.get(entityId);
+        const sheet = entity.sheet;
+
+        if (sheet.rendered) {
+            sheet.maximize();
+            // @ts-ignore
+            sheet.bringToTop();
+        } else {
+            sheet.render(true);
+        }
+    }
+
+    /**
+     * Creates a new group actor and renders it immediately (inside the group panel)
+     */
+    static _onClickCreateGroup() {
+        const actorData = {
             name: game.i18n.localize("FAx.ActorGroups.New"),
             type: "group",
         };
 
-        ActorFate._create(createData, { renderSheet: true });
+        ActorFate._create(actorData, { renderSheet: true });
     }
 }

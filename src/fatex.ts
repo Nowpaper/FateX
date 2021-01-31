@@ -27,7 +27,7 @@ import { SkillSheet } from "./module/item/skill/SkillSheet";
 import { StressSheet } from "./module/item/stress/StressSheet";
 import { StuntSheet } from "./module/item/stunt/StuntSheet";
 import { TemplateActorsFeature } from "./module/apps/template-actors/TemplateActorsFeature";
-import { ActorGroup } from "./module/apps/actor-groups/ActorGroup";
+import { ActorGroupSheet } from "./module/apps/actor-groups/ActorGroupSheet";
 import { ActorGroupPanel } from "./module/apps/actor-groups/ActorGroupPanel";
 import { ReferenceSheet } from "./module/item/references/ReferenceSheet";
 
@@ -64,7 +64,7 @@ Hooks.once("init", async () => {
         makeDefault: true,
     });
 
-    Actors.registerSheet("FateX", ActorGroup, {
+    Actors.registerSheet("FateX", ActorGroupSheet, {
         types: ["group"],
         makeDefault: true,
     });

@@ -12,7 +12,7 @@
             }
         },
         "group": {
-            "type": "",
+            "groupType": "manual",
             "options": {
                 "showArtwork": true
             }
