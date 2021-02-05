@@ -1,5 +1,6 @@
-import { InlineActorSheetFate } from "../../actor/InlineActorSheetFate";
-import { getReferencesByGroupType, ReferenceItem } from "../../helper/ActorGroupHelper";
+import { InlineActorSheetFate } from "./InlineActorSheetFate";
+import { getReferencesByGroupType, ReferenceItem } from "../helper/ActorGroupHelper";
+import { ActorFate } from "./ActorFate";
 
 /**
  * Represents a single actor group. Has a normal (inside groups panel) and a popped out state.
@@ -36,6 +37,27 @@ export class ActorGroupSheet extends ActorSheet {
             template: "/systems/fatex/templates/actor/group.html",
             dragDrop: [{ dropSelector: null }],
         });
+    }
+
+    getData() {
+        const data = super.getData();
+
+        const usedTokenReferences = this.actor.items.filter((i) => i.data.type === "tokenReference" && i.data.data.scene === game.scenes.active.id);
+        const usedTokenReferencesMap = usedTokenReferences.map((token) => token.data.data.id);
+
+        //TODO: implement new typings
+        const actors = (Object.values(game.actors.tokens) as unknown) as ActorFate[];
+
+        // @ts-ignore
+        data.availableTokens = actors.filter((actor) => !usedTokenReferencesMap.includes(actor.token.id));
+
+        return data;
+    }
+
+    activateListeners(html) {
+        super.activateListeners(html);
+
+        html.find(`.fatex__actor_group__createToken`).click((e) => this._onCreateTokenReference.call(this, e));
     }
 
     /**
@@ -92,7 +114,7 @@ export class ActorGroupSheet extends ActorSheet {
      */
     renderInlineToken(reference: ReferenceItem) {
         const scene: any = game.scenes.find((scene) => scene.id === reference.data.scene);
-        const tokenData = scene?.data.tokens.find((token) => token._id === reference.data.id && token.visible);
+        const tokenData = scene?.data.tokens.find((token) => token._id === reference.data.id);
 
         if (!tokenData) {
             return;
@@ -111,6 +133,10 @@ export class ActorGroupSheet extends ActorSheet {
      * @param actorID
      */
     _createActorReference(actorID) {
+        if (this.actor.items.find((i) => i.data.type === "actorReference" && i.data.data.id === actorID)) {
+            return;
+        }
+
         const itemData = {
             name: "ActorReference",
             type: "actorReference",
@@ -126,6 +152,10 @@ export class ActorGroupSheet extends ActorSheet {
      * Create a new ownedItem of type tokenReference based on a given sceneID and tokenID
      */
     _createTokenReference(tokenID: string, sceneID: string): void {
+        if (this.actor.items.find((i) => i.data.type === "tokenReference" && i.data.data.id === tokenID && i.data.data.scene === sceneID)) {
+            return;
+        }
+
         const itemData = {
             name: "TokenReference",
             type: "tokenReference",
@@ -141,6 +171,23 @@ export class ActorGroupSheet extends ActorSheet {
     /*************************
      * EVENT HANDLER
      *************************/
+
+    _onCreateTokenReference(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        const dataset = e.currentTarget.dataset;
+
+        //TODO: implement new typings
+        /*const actors = (Object.values(game.actors.tokens) as unknown) as ActorFate[];
+        const tokenActor = actors.find((t: ActorFate) => t.id === dataset.tokenId);
+
+        if (!tokenActor) {
+            return;
+        }*/
+
+        this._createTokenReference(dataset.tokenId, game.scenes.active.id);
+    }
 
     /**
      * Override of the default drop handler.

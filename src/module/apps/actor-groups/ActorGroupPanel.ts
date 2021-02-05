@@ -1,5 +1,5 @@
 import { ActorFate } from "../../actor/ActorFate";
-import { ActorGroupSheet } from "./ActorGroupSheet";
+import { ActorGroupSheet } from "../../actor/ActorGroupSheet";
 
 /**
  * Represents the actor group panel containing multiple actor groups.

@@ -20,11 +20,11 @@ export class InlineActorSheetFate extends ActorSheetFate {
     }
 
     get template() {
-        return "systems/fatex/templates/actor/inline.html";
+        return "systems/fatex/templates/inline-actor/character.html";
     }
 
     _injectHTML(html, options) {
-        $(`#${options.group.id} .fatex__actor_group_overview_popout__sheets`).append(html);
+        $(`#${options.group.id} .fatex__actor_group__inlinesheets`).append(html);
         this._element = html;
     }
 

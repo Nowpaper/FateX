@@ -27,7 +27,7 @@ import { SkillSheet } from "./module/item/skill/SkillSheet";
 import { StressSheet } from "./module/item/stress/StressSheet";
 import { StuntSheet } from "./module/item/stunt/StuntSheet";
 import { TemplateActorsFeature } from "./module/apps/template-actors/TemplateActorsFeature";
-import { ActorGroupSheet } from "./module/apps/actor-groups/ActorGroupSheet";
+import { ActorGroupSheet } from "./module/actor/ActorGroupSheet";
 import { ActorGroupPanel } from "./module/apps/actor-groups/ActorGroupPanel";
 import { ReferenceSheet } from "./module/item/references/ReferenceSheet";
 
