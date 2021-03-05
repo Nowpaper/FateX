@@ -108,18 +108,7 @@ export class SkillItem extends BaseItem {
         // Prepare skill item
         const templateData = { skill, rank, dice, total, ladder };
 
-        const chatData: {
-            user: string;
-            speaker: unknown;
-            sound: string;
-            type: number;
-            roll: Roll;
-            rollMode: string;
-            flags: {
-                templateVariables: unknown;
-            };
-            content?: HTMLElement;
-        } = {
+        const chatData = {
             user: game.user._id,
             speaker: ChatMessage.getSpeaker({ actor: actor }),
             type: CONST.CHAT_MESSAGE_TYPES.ROLL,
