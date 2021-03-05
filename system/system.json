@@ -5,6 +5,7 @@
     "version": "0.8.2",
     "author": "Patrick Bauer (Daddi#2333)",
     "esmodules": ["system.js"],
+    "scripts": ["hmr.js"],
     "styles": ["scss/fatex.css"],
     "languages": [
         {

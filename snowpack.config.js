@@ -1,45 +1,35 @@
-/*
-Current problems:
-
- 1.) Build has to be triggered once before to make sure files are in dist folder an can be found by foundry
- 2.) HMR works but reloads again an again
- 3.) dev.js needs following code on handleRequest method:
-
-        } else if (matchedRoute.src === '^/systems/fatex/.*$') {
-            reqUrl = matchedRoute.dest(req, res);
-        }
-
- */
-
-const httpProxy = require("http-proxy");
-
-var proxy = httpProxy.createServer({
-    target: "http://localhost:30000",
-});
-
 module.exports = {
     mount: {
         src: "/",
         system: { url: "/", static: true, resolve: false },
     },
-    plugins: ["@snowpack/plugin-sass", "./snowpack-foundry-plugin"],
+    plugins: [
+        [
+            "@snowpack/plugin-sass",
+            {
+                compilerOptions: {
+                    //loadPath: "scss",
+                },
+            },
+        ],
+        "./snowpack-foundry-plugin",
+    ],
     buildOptions: {
         out: "dist",
+        watch: true,
     },
-    proxy: {
-        "/socket.io": {
-            target: "http://localhost:30000",
-            ws: true,
-        },
+    devOptions: {
+        hmr: true,
     },
+    exclude: ["**/_*.scss"],
+    /*optimize: {
+        entrypoints: ["src/system.js"],
+        bundle: true,
+        minify: true,
+        target: "es2017",
+    },*/
     experiments: {
-        /*optimize: {
-            entrypoints: ["src/system.ts"],
-            bundle: true,
-            minify: true,
-            target: "es2017",
-        },*/
-        routes: [
+        /*  routes: [
             {
                 src: "/systems/fatex/.*",
                 dest: (req, res) => {
@@ -54,6 +44,6 @@ module.exports = {
                 },
                 match: "all",
             },
-        ],
+        ],*/
     },
 };
